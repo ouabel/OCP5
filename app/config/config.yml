@@ -66,6 +66,12 @@ doctrine:
                 type: yml
                 dir: Resources\config\doctrine
 
+stof_doctrine_extensions:
+    default_locale: fr_FR
+    orm:
+        default:
+            sluggable: true
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'
