@@ -15,5 +15,7 @@
 		{% endfor %}
 	</p>
 
+	{% include '@FOSComment/Thread/async.html.twig' with {'id': profile.id} %}
+
 </div>
 {% endblock %}

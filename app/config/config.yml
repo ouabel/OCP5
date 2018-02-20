@@ -103,3 +103,15 @@ fos_user:
     from_email:
         address: "mailer_user"
         sender_name: "mailer_user"
+
+fos_comment:
+    db_driver: orm
+    class:
+        model:
+            comment: AppBundle\Entity\Comment
+            thread: AppBundle\Entity\Profile
+fos_rest:
+    format_listener: false
+
+assetic:
+    bundles: [ "FOSCommentBundle" ]

@@ -4,17 +4,18 @@ namespace AppBundle\Entity;
 
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use FOS\CommentBundle\Entity\Thread as BaseThread;
 
 /**
  * Profile
  * @Vich\Uploadable
  */
-class Profile
+class Profile extends BaseThread
 {
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string

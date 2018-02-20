@@ -9,12 +9,12 @@ easy_admin:
                 fields:
                     - id
                     - name
+                    - { property: 'photo', type: 'image', base_path: '%app.path.profile_photos%' }
                     - isPublished
                     - specialty
                     - district
                     - province
                     - updatedAt
-                    - { property: 'photo', type: 'image', base_path: '%app.path.profile_photos%' }
             form:
                 fields:
                     - { type: group, css_class: "col-sm-6", label: 'Détails'}
@@ -106,3 +106,6 @@ easy_admin:
                     - lastLogin
                     - { property: 'plainPassword', type: 'text', type_options: { required: false } }
                     - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+        Comment:
+            class: AppBundle\Entity\Comment
+            label: Commentaires
