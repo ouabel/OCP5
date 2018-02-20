@@ -1,0 +1,38 @@
+AppBundle\Entity\District:
+    type: entity
+    table: districts
+    repositoryClass: AppBundle\Repository\DistrictRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        slug:
+            type: string
+            unique: true
+            length: 255
+            gedmo:
+                slug:
+                    fields:
+                        - name
+        zip:
+            type: integer
+            length: 5
+    manyToOne:
+        province:
+            targetEntity: Province
+            inversedBy: districts
+            joinColumn:
+                name: province_id
+                referencedColumnName: id
+                nullable: false
+    oneToMany:
+        profiles:
+            targetEntity: Profile
+            mappedBy: district
+    lifecycleCallbacks: {  }

@@ -1,0 +1,27 @@
+AppBundle\Entity\Specialty:
+    type: entity
+    table: specialties
+    repositoryClass: AppBundle\Repository\SpecialtyRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        slug:
+            type: string
+            unique: true
+            length: 255
+            gedmo:
+                slug:
+                    fields:
+                        - name
+    oneToMany:
+        profiles:
+            targetEntity: Profile
+            mappedBy: specialty
+    lifecycleCallbacks: {  }

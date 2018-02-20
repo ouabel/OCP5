@@ -1,0 +1,27 @@
+AppBundle\Entity\Tag:
+    type: entity
+    table: tags
+    repositoryClass: AppBundle\Repository\TagRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        slug:
+            type: string
+            unique: true
+            length: 255
+            gedmo:
+                slug:
+                    fields:
+                        - name
+    manyToMany:
+        profiles:
+            targetEntity: Profile
+            mappedBy: tags
+    lifecycleCallbacks: {  }
