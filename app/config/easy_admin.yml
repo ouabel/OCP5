@@ -14,12 +14,14 @@ easy_admin:
                     - district
                     - province
                     - updatedAt
+                    - { property: 'photo', type: 'image', base_path: '%app.path.profile_photos%' }
             form:
                 fields:
                     - { type: group, css_class: "col-sm-6", label: 'Détails'}
                     - name
                     - slug
                     - isPublished
+                    - { property: 'photoFile', type: 'vich_image' }
                     - { property: 'specialty', type: 'easyadmin_autocomplete' }
                     - { property: 'tags', type: 'easyadmin_autocomplete' }
                     - description
@@ -36,6 +38,9 @@ easy_admin:
             new:
                 fields:
                     - '-slug'
+            show:
+                fields:
+                    - { property: 'photo', type: 'photo', base_path: '%app.path.profile_photos%' }
 
         Specialty:
             class: AppBundle\Entity\Specialty

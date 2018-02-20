@@ -8,6 +8,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    app.path.profile_photos: 'uploads/images/profiles'
 
 framework:
     #esi: ~
@@ -67,7 +68,7 @@ doctrine:
                 dir: Resources\config\doctrine
 
 stof_doctrine_extensions:
-    default_locale: fr_FR
+    default_locale: en_US
     orm:
         default:
             sluggable: true
@@ -79,3 +80,12 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        profile_photos:
+            uri_prefix: '%app.path.profile_photos%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/images/profiles'
+            namer:
+                service: vich_uploader.namer_uniqid

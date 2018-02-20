@@ -2,8 +2,12 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * Profile
+ * @Vich\Uploadable
  */
 class Profile
 {
@@ -26,6 +30,12 @@ class Profile
      * @var string|null
      */
     private $photo;
+
+    /**
+     * @Vich\UploadableField(mapping="profile_photos", fileNameProperty="photo")
+     * @var File
+     */
+    private $photoFile;
 
     /**
      * @var string
@@ -187,6 +197,19 @@ class Profile
     public function getPhoto()
     {
         return $this->photo;
+    }
+
+    public function setPhotoFile(File $photo = null)
+    {
+        $this->photoFile = $photo;
+        if ($photo) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getPhotoFile()
+    {
+        return $this->photoFile;
     }
 
     /**
