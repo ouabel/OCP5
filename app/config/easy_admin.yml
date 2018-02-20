@@ -33,8 +33,14 @@ easy_admin:
                     - { property: 'province', css_class: 'js-province' }
                     - { property: 'district', type: 'easyadmin_autocomplete', css_class: 'js-district' }
                     - address
-                    - { property: 'latitude', type: text }
-                    - { property: 'longitude', type: text }
+                    - { property: 'latitude', type: text, css_class: 'js-latitude' }
+                    - { property: 'longitude', type: text, css_class: 'js-longitude' }
+                    -
+                        property: map
+                        type: text
+                        css_class: 'js-pick-location'
+                        type_options:
+                            mapped: false
             new:
                 fields:
                     - '-slug'
