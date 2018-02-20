@@ -30,8 +30,8 @@ easy_admin:
                     - mobile
                     - email
                     - { type: group, css_class: "col-sm-6", label: 'Adresse'}
-                    - province
-                    - { property: 'district', type: 'easyadmin_autocomplete' }
+                    - { property: 'province', css_class: 'js-province' }
+                    - { property: 'district', type: 'easyadmin_autocomplete', css_class: 'js-district' }
                     - address
                     - { property: 'latitude', type: text }
                     - { property: 'longitude', type: text }
