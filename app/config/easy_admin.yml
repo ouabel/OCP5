@@ -1,0 +1,85 @@
+easy_admin:
+    site_name: Administration
+
+    entities:
+        Profile:
+            class: AppBundle\Entity\Profile
+            label: Profiles
+            list:
+                fields:
+                    - id
+                    - name
+                    - isPublished
+                    - specialty
+                    - district
+                    - province
+                    - updatedAt
+            form:
+                fields:
+                    - { type: group, css_class: "col-sm-6", label: 'Détails'}
+                    - name
+                    - slug
+                    - isPublished
+                    - { property: 'specialty', type: 'easyadmin_autocomplete' }
+                    - { property: 'tags', type: 'easyadmin_autocomplete' }
+                    - description
+                    - { type: group, css_class: "col-sm-6", label: 'Contact'}
+                    - phone
+                    - mobile
+                    - email
+                    - { type: group, css_class: "col-sm-6", label: 'Adresse'}
+                    - province
+                    - { property: 'district', type: 'easyadmin_autocomplete' }
+                    - address
+                    - { property: 'latitude', type: text }
+                    - { property: 'longitude', type: text }
+            new:
+                fields:
+                    - '-slug'
+
+        Specialty:
+            class: AppBundle\Entity\Specialty
+            label: Spécialités
+            form:
+                fields:
+                    - name
+                    - slug
+            new:
+                fields:
+                    - '-slug'
+        Tag:
+            class: AppBundle\Entity\Tag
+            label: Expertises
+            form:
+                fields:
+                    - name
+                    - slug
+            new:
+                fields:
+                    - '-slug'
+        Province:
+            class: AppBundle\Entity\Province
+            label: Wilayas
+            form:
+                fields:
+                    - name
+                    - slug
+                    - zip
+            new:
+                fields:
+                    - '-slug'
+        District:
+            class: AppBundle\Entity\District
+            label: Communes
+            form:
+                fields:
+                    - name
+                    - slug
+                    - province
+                    - zip
+            new:
+                fields:
+                    - '-slug'
+            new:
+                fields:
+                    - '-slug'
