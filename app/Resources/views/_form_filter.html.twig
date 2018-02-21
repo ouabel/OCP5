@@ -1,0 +1,12 @@
+{% if filterForm is defined %}
+<div class="row">
+{{ form_start(filterForm) }}
+<div class="col-sm-6">
+	{{ form_row(filterForm.what) }}
+</div>
+<div class="col-sm-6">
+	{{ form_row(filterForm.where) }}
+</div>
+{{ form_end(filterForm) }}
+</div>
+{% endif %}

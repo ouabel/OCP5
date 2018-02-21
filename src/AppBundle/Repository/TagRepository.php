@@ -10,4 +10,22 @@ namespace AppBundle\Repository;
  */
 class TagRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	/**
+     * @return Tag[]
+     */
+    public function findBySearchQuery(string $query): array
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+            $queryBuilder
+                ->orWhere('p.name LIKE :q')
+                ->setParameter('q', '%'.$query.'%')
+            ;
+
+        return $queryBuilder
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

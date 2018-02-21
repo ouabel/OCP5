@@ -2,16 +2,38 @@
 {% block title %}{{ profile.name }}{% endblock %}
 {% block body %}
 <div class="container">
-	<h1>{{ profile.name }}</h1>
-	<p>{{ profile.specialty }}<p>
+	<h1><a href="{{ path('profile_show', {
+					'slug': profile.slug,
+					'district': profile.district.slug,
+					'specialty': profile.specialty.slug,
+					'province': profile.province.slug
+				}) }}">{{ profile.name }}</a></h1>
+	<p><a href="{{ path('profiles_by_district_specialty', {
+					'province_slug': profile.province.slug,
+					'district_slug': profile.district.slug,
+					'specialty_slug': profile.specialty.slug
+				}) }}">{{ profile.specialty }}</a><p>
 
 	<p>
-		{{ profile.address }}, {{ profile.district }}, {{ profile.province }}
+		{{ profile.address }},
+		<a href="{{ path('profiles_by_district_specialty', {
+					'province_slug': profile.province.slug,
+					'district_slug': profile.district.slug,
+					'specialty_slug': profile.specialty.slug
+				}) }}">{{ profile.district }}</a>,
+		<a href="{{ path('profiles_by_province_specialty', {
+					'province_slug': profile.province.slug,
+					'specialty_slug': profile.specialty.slug
+				}) }}">{{ profile.province }}</a>
 	</p>
 
 	<p>
 		{% for tag in profile.tags %}
-			{{ tag }},
+			<a href="{{ path('profiles_by_district_tag', {
+					'province_slug': profile.province.slug,
+					'district_slug': profile.district.slug,
+					'tag_slug': tag.slug
+				}) }}">{{ tag }}</a>,
 		{% endfor %}
 	</p>
 

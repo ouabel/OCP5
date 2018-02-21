@@ -10,4 +10,22 @@ namespace AppBundle\Repository;
  */
 class ProvinceRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	/**
+     * @return Province[]
+     */
+    public function findBySearchQuery(string $query): array
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+            $queryBuilder
+                ->orWhere('p.name LIKE :q')
+                ->setParameter('q', '%'.$query.'%')
+            ;
+
+        return $queryBuilder
+            ->orderBy('p.name', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

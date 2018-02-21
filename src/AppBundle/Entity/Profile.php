@@ -12,6 +12,8 @@ use FOS\CommentBundle\Entity\Thread as BaseThread;
  */
 class Profile extends BaseThread
 {
+    const NUM_ITEMS = 10;
+
     /**
      * @var int
      */

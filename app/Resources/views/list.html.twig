@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ what }} {{ where ? 'à ' ~ where : 'en Algérie' }} {% endblock %}
+{% block body %}
+<div class="container">
+
+	<div>
+	{{ include('_form_filter.html.twig') }}
+	</div>
+	<h1>{{ what }} {{ where ? 'à ' ~ where : 'en Algérie' }}</h1>
+	<div class="col-xs-12 col-sm-7">
+	{% for profile in profiles %}
+		<div class="panel panel-default" id="profile-{{ profile.id }}">
+			<div class="panel-heading">
+				<a href="{{ path('profile_show', {
+					'slug': profile.slug,
+					'district': profile.district.slug,
+					'specialty': profile.specialty.slug,
+					'province': profile.province.slug
+				}) }}">{{ profile.name }}</a>
+			</div>
+			<div class="panel-body">
+				<span class="label label-primary">{{ profile.specialty }}</span>
+				<p>{{ profile.address }}, {{ profile.district }}, {{ profile.province }}</p>
+				<p>{{ profile.phone }}</p>
+				
+				{% for tag in profile.tags %}
+					<span class="label label-default">{{ tag }}</span>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+
+	{{ pagerfanta(
+		profiles,
+		'twitter_bootstrap3_translated'
+	) }}
+	</div>
+	<div class="col-xs-12 col-sm-5">
+		<div id="map" style="height: 400px; width: 100%;"></div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		var dataUrl = '{{ path('profiles_list_json', app.request.attributes.get('_route_params'))|escape('js') }}';
+	</script>
+	<script src="{{ asset('js/map.js') }}"></script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&callback=initMap"></script>
+	<script>
+	jQuery(document).ready(function(){
+		var whatDataUrl = '{{ path('ajax_fetch_what')|escape('js') }}';
+		var whatInput = $('#filter_form_what');
+		whatInput.select2({
+			placeholder: "Quoi?",
+			width: '100%',
+			ajax: {
+				url: whatDataUrl,
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						q: params.term
+					};
+				},
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 2
+		});
+
+		var filterForm = $("form[name='filter_form']");
+
+		var whereDataUrl = '{{ path('ajax_fetch_where')|escape('js') }}';
+		var whereInput = $('#filter_form_where');
+		whereInput.select2({       
+			placeholder: "Où?",
+			width: '100%',
+			ajax: {
+				url: whereDataUrl,
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						q: params.term
+					};
+				},
+				processResults: function (data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			},
+			minimumInputLength: 2
+		});
+
+		whatInput.on('change', function (e) {
+			if ( whereInput.val() !== null ) {
+				filterForm.submit();
+			}
+		});
+
+		whereInput.on('change', function (e) {
+			if ( whatInput.val() !== null ) {
+				filterForm.submit();
+			}
+
+		});
+
+	});
+	</script>
+{% endblock %}

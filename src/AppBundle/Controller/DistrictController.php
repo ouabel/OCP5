@@ -12,7 +12,7 @@ use AppBundle\Entity\District;
 class DistrictController extends Controller
 {
     /**
-     * @Route("/ajax/district", name="ajax_district_by_province", options={"expose"=true})
+     * @Route("/json/district", name="ajax_district_by_province", options={"expose"=true})
      *
      */
     public function ajaxDistrictByProvinceAction(Request $request)

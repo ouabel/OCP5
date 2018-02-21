@@ -4,6 +4,7 @@ easy_admin:
     entities:
         Profile:
             class: AppBundle\Entity\Profile
+            controller: AppBundle\Controller\Admin\ProfileAdminController
             label: Profiles
             list:
                 fields:
@@ -96,7 +97,7 @@ easy_admin:
                     - '-slug'
         User:
             class: AppBundle\Entity\User
-            controller: AppBundle\Controller\Admin\UserController
+            controller: AppBundle\Controller\Admin\UserAdminController
             label: Utilisateurs
             form:
                 fields:

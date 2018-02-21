@@ -2,6 +2,15 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Profile;
+use AppBundle\Entity\Tag;
+use AppBundle\Entity\Specialty;
+use AppBundle\Entity\District;
+use AppBundle\Entity\Province;
+use Doctrine\ORM\Query;
+
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 /**
  * ProfileRepository
  *
@@ -10,4 +19,40 @@ namespace AppBundle\Repository;
  */
 class ProfileRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getProfiles(?array $properties, int $page = 1)
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+        if ($specialty = $properties['specialty']) {
+        	$queryBuilder->andWhere(':specialty = p.specialty')->setParameter('specialty', $specialty);
+        }
+        if ($tag = $properties['tag']) {
+        	$queryBuilder->andWhere(':tag MEMBER OF p.tags')->setParameter('tag', $tag);
+        }
+        if ($district = $properties['district']) {
+        	$queryBuilder->andWhere(':district = p.district')->setParameter('district', $district);
+        }
+        if ($province = $properties['province']) {
+        	$queryBuilder->andWhere(':province = p.province')->setParameter('province', $province);
+        }
+
+        $query = $queryBuilder
+            ->andWhere('p.isPublished = 1')
+            ->orderBy('p.name', 'DESC')
+            ->getQuery();
+
+         return $this->createPaginator($query, $page);
+    }
+
+
+    private function createPaginator(Query $query, int $page): Pagerfanta
+    {
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($query));
+        $paginator->setMaxPerPage(Profile::NUM_ITEMS);
+        $paginator->setCurrentPage($page);
+
+        return $paginator;
+    }
+
 }

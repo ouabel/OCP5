@@ -3,11 +3,8 @@ $(document).ready(function(){
 	loadDistricts = function(jsDistrict, province){
 		currentVal = jsDistrict.val();
 		jsDistrict.html("");
-		var dataUrl = Routing.generate('ajax_district_by_province', {
-			'province': province
-		});
 		jQuery.when(
-			jQuery.getJSON(dataUrl)
+			jQuery.getJSON(districtsDataUrl + '?province=' + province)
 		).done( function(data) {
 			jsDistrict.select2({
 				data: data
