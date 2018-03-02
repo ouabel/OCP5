@@ -10,9 +10,14 @@ AppBundle\Entity\Profile:
             generator:
                 strategy: AUTO
     fields:
-        name:
+        title:
             type: string
-            length: 255
+            nullable: true
+        lastName:
+            type: string
+        firstName:
+            type: string
+            nullable: true
         isPublished:
             type: boolean
         photo:
@@ -21,12 +26,14 @@ AppBundle\Entity\Profile:
         slug:
             type: string
             unique: true
-            length: 255
+            length: 190
             gedmo:
                 slug:
                     unique: true
                     fields:
-                        - name
+                        - title
+                        - lastName
+                        - firstName
         description:
             type: text
             nullable: true
@@ -45,11 +52,9 @@ AppBundle\Entity\Profile:
             nullable: true
         phone:
             type: string
-            length: 255
             nullable: true
         mobile:
             type: string
-            length: 255
             nullable: true
         email:
             type: string
@@ -59,6 +64,11 @@ AppBundle\Entity\Profile:
         updatedAt:
             type: datetime
             column: updated_at
+    oneToMany:
+        comments:
+            targetEntity: AppBundle\Entity\Comment
+            mappedBy: profile
+            cascade: ["persist", "remove"]
     manyToOne:
 #        user:
 #            targetEntity: AppBundle\Entity\User

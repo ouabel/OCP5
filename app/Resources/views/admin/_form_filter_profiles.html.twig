@@ -1,0 +1,8 @@
+{{ form_start(filterForm) }}
+	<div style="display: flex; flex-wrap: wrap;">
+			{{ form_row(filterForm.specialty) }}
+			{{ form_row(filterForm.province) }}
+			{{ form_row(filterForm.district) }}
+			<p><input type="submit" value="Filtrer" class="btn btn-primary"></p>
+	</div>
+{{ form_end(filterForm) }}

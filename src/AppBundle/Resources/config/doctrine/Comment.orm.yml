@@ -1,13 +1,23 @@
 AppBundle\Entity\Comment:
     type:  entity
-    table: comments
     ChangeTrackingPolicy: DEFERRED_EXPLICIT
+    repositoryClass: AppBundle\Repository\CommentRepository
+    table: comments
     id:
         id:
             type: integer
             generator:
                 strategy: AUTO
+    fields:
+        content:
+            type: text
+        createdAt:
+            type: datetime
+        isPublished:
+            type: boolean
     manyToOne:
-        thread:
+        author:
+            targetEntity: AppBundle\Entity\User
+        profile:
             targetEntity: AppBundle\Entity\Profile
-            nullable: false
+            inversedBy: comments

@@ -3,22 +3,37 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AppBundle\Entity\Profile;
 use AppBundle\Entity\Province;
 use AppBundle\Entity\District;
 use AppBundle\Entity\Specialty;
 use AppBundle\Entity\Tag;
 
-use AppBundle\Form\FilterForm;
-
 class ProfileController extends Controller
 {
+    /**
+     *
+     * @Route("/profile/{id}", name="profile_by_id")
+     */
+    function profileByIdAction(Profile $profile)
+    {
+        if ($profile) {
+            return $this->redirectToRoute('profile_show', [
+                    'province' => $profile->getProvince()->getSlug(),
+                    'district' => $profile->getDistrict()->getSlug(),
+                    'specialty' => $profile->getSpecialty()->getSlug(),
+                    'slug' => $profile->getSlug()
+                ]);
+        } else {
+            return new Response('404');
+        }
+    }
+
     /**
      *
      * @Route("/{province}/{district}/{specialty}/{slug}", name="profile_show")
@@ -28,57 +43,32 @@ class ProfileController extends Controller
         $em = $this->getDoctrine()->getManager();
         $profileRepository = $em->getRepository(Profile::class);
         $profile = $profileRepository->findOneBy(['slug' => $slug]);
-        return $this->render('profile_show.html.twig', [
-            'profile' => $profile
-        ]);
-    }
 
-    /**
-     * 
-     * @Route("/filter", name="profiles_filter")
-     * @Method("POST")
-     */
-    public function filterRouteAction(Request $request)
-    {
-        $filterFormInput = $request->request->get("filter_form");
+        if ($profile) {
 
-        if (array_key_exists('what', $filterFormInput)) {
-            $what = $filterFormInput['what'];
+            $province = $profile->getProvince()->getSlug();
+            $district = $profile->getDistrict()->getSlug();
+            $specialty = $profile->getSpecialty()->getSlug();
+
+            if ( $province !== $request->attributes->get('province')
+                || $district !== $request->attributes->get('district')
+                || $specialty !== $request->attributes->get('specialty')
+            ){
+                return $this->redirectToRoute('profile_show', [
+                    'province' => $province,
+                    'district' => $district,
+                    'specialty' => $specialty,
+                    'slug' => $profile->getSlug()
+                ]);
+            } else {
+                return $this->render('profile_show.html.twig', [
+                    'profile' => $profile,
+                ]);
+            }
+
         } else {
-            $what = null;
-            //return \Exception
+            return new Response('404');
         }
-
-        if (array_key_exists('where', $filterFormInput)) {
-            $where = $filterFormInput['where'];
-        } else {
-            $where = null;
-        }
-
-        $routeName = 'profiles_by';
-        $routeParams = [];
-
-        if (strpos($where, 'province_') !== false) {
-            $where = substr($where, 9);
-            $routeName .= '_province';
-            $routeParams['province_slug'] = $where;
-        } elseif (!is_null($where)) {
-            $routeName .= '_district';
-            $routeParams['province_slug'] = 'xxxxxx';
-            $routeParams['district_slug'] = $where;
-        }
-
-        if (strpos($what, 'tag_') !== false) {
-            $what = substr($what, 4);
-            $routeName .= '_tag';
-            $routeParams['tag_slug'] = $what;
-        } elseif (!is_null($what)) {
-           $routeName .= '_specialty';
-           $routeParams['specialty_slug'] = $what;
-        }
-
-        //dump($routeName,$routeParams);return new Response('</body>');
-        return $this->redirectToRoute($routeName, $routeParams);
     }
 
     /**
@@ -109,7 +99,10 @@ class ProfileController extends Controller
                 if ($lat != 0 && $lng != 0 ) {
                     $data[] = [
                         'id' => $profile->getID(),
-                        'name' => $profile->getName(),
+                        'name' => $profile->getFullName(),
+                        'specialty' => $profile->getSpecialty()->getName(),
+                        'district' => $profile->getDistrict()->getName(),
+                        'link' => $this->generateUrl('profile_by_id', ['id'=>$profile->getID() ] ),
                         'position' => [
                             'lat' => $lat,
                             'lng' => $lng
@@ -122,20 +115,21 @@ class ProfileController extends Controller
     }
 
     /**
-     * @Route("/", name="profiles_list")
-     * @Route("/tag-{tag_slug}", name="profiles_by_tag")
+     * @Route("/", name="home_page")
+     *
+     */
+    public function homeAction(){
+        return $this->render('home.html.twig');
+    }
+
+    /**
      * @Route("/{province_slug}/tag-{tag_slug}", name="profiles_by_province_tag")
      * @Route("/{province_slug}/{district_slug}/tag-{tag_slug}", name="profiles_by_district_tag")
-     * @Route("/{specialty_slug}", name="profiles_by_specialty")
      * @Route("/{province_slug}/{specialty_slug}", name="profiles_by_province_specialty")
      * @Route("/{province_slug}/{district_slug}/{specialty_slug}", name="profiles_by_district_specialty")
      */
     public function filterProfilesAction(Request $request)
     {
-        $filterForm = $this->createForm(FilterForm::class, null, array(
-            'action' => $this->generateUrl('profiles_filter'),
-            'method' => 'POST'
-        ));
 
         $em = $this->getDoctrine()->getManager();
         $profileRepository = $em->getRepository(Profile::class);
@@ -150,18 +144,17 @@ class ProfileController extends Controller
         $properties = $this->filteringProperties($slugs);
 
         if(empty($properties)){
+            throw $this->createNotFoundException();
             return new Response('404');
         } else {
             $what = ($properties['specialty'] ?: $properties['tag']);
             $where = ($properties['district'] ?: $properties['province']);
 
             $profiles = $profileRepository->getProfiles($properties, $page);
-            dump($page);
             return $this->render('list.html.twig', [
                 'what' => $what,
                 'where' => $where,
-                'profiles' => $profiles,
-                'filterForm' => $filterForm->createView()
+                'profiles' => $profiles
             ]);
         }
     
@@ -188,14 +181,16 @@ class ProfileController extends Controller
             }
         }
 
-        if (!is_null($district_slug = $slugs['district'])) {
-            $district = $em->getRepository(District::class)->findOneBy(['slug' => $district_slug]);
-            if(is_null($district)){
-                return [];
-            }
-        } elseif (!is_null($province_slug = $slugs['province'])) {
+        if (!is_null($province_slug = $slugs['province'])) {
             $province = $em->getRepository(Province::class)->findOneBy(['slug' => $province_slug]);
             if(is_null($province)){
+                return [];
+            }
+        }
+
+        if (!is_null($district_slug = $slugs['district'])) {
+            $district = $em->getRepository(District::class)->findOneBy(['slug' => $district_slug, 'province' => $province]);
+            if(is_null($district)){
                 return [];
             }
         }

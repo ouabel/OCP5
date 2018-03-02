@@ -1,0 +1,23 @@
+{% for comment in comments %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Par : {{ comment.author }} le : {{ comment.createdAt|date('d-m-Y à H:m') }}
+		</div>
+		<div class="panel-body">
+			{{ comment.content}}
+		</div>
+	</div>
+{% endfor %}
+	
+	{% if comments.haveToPaginate %}
+		{{ pagerfanta(
+			comments,
+			'twitter_bootstrap3_translated',
+			{'routeName': 'profile_show', 'routeParams' : {
+				'slug': profile.slug,
+				'district': profile.district.slug,
+				'specialty': profile.specialty.slug,
+				'province': profile.province.slug
+			}}
+		)}}
+	{% endif %}

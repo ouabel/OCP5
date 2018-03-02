@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * District
@@ -24,6 +25,10 @@ class District
 
     /**
      * @var int
+     * @Assert\Regex(
+     *     pattern="/^[0-9]*$/",
+     *     match=true
+     * )
      */
     private $zip;
 

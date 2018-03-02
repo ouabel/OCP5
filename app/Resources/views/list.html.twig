@@ -1,120 +1,84 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
+{% block title %} {{ what }} à {{ where }} {% endblock %}
 
-{% block title %} {{ what }} {{ where ? 'à ' ~ where : 'en Algérie' }} {% endblock %}
-{% block body %}
-<div class="container">
+{% block container %}
 
-	<div>
-	{{ include('_form_filter.html.twig') }}
+	<h1>{{ what }} à {{ where }}</h1>
+	<div class="visible-xs">
+		<p>
+			<span class="btn btn-info to_list disabled">Afficher la liste</span>
+			<span class="btn btn-info to_map">Afficher la carte</span>
+		</p>
 	</div>
-	<h1>{{ what }} {{ where ? 'à ' ~ where : 'en Algérie' }}</h1>
-	<div class="col-xs-12 col-sm-7">
-	{% for profile in profiles %}
-		<div class="panel panel-default" id="profile-{{ profile.id }}">
-			<div class="panel-heading">
-				<a href="{{ path('profile_show', {
-					'slug': profile.slug,
-					'district': profile.district.slug,
-					'specialty': profile.specialty.slug,
-					'province': profile.province.slug
-				}) }}">{{ profile.name }}</a>
+	<div class="row">
+		<div class="col-xs-12 col-sm-7 profiles-list">
+		{% for profile in profiles %}
+			<div class="panel panel-default" id="profile-{{ profile.id }}">
+				<div class="panel-body">
+					<div class="profile-info">
+						<div class="profile-avatar">
+							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}">
+						</div>
+						<div class="profile-name-container">
+							<h2 class="profile-name" ><a href="{{ path('profile_show', {
+								'slug': profile.slug,
+								'district': profile.district.slug,
+								'specialty': profile.specialty.slug,
+								'province': profile.province.slug
+							}) }}">{{ profile.fullName }}</a></h2>
+							<h3 class="profile-spacialty" >{{ profile.specialty }}</h3>
+							{{ profile.address }}, {{ profile.district }}, {{ profile.province }}
+						</div>
+					</div>
+					<div>
+						{% if profile.phone %}<span class="phone"><i class="glyphicon glyphicon-phone-alt"></i> {{ profile.phone }}</span>{% endif %}
+						{% if profile.mobile %}<span class="phone"><i class="glyphicon glyphicon-earphone"></i> {{ profile.mobile }}</span>{% endif %}
+					</div>
+				</div>
 			</div>
-			<div class="panel-body">
-				<span class="label label-primary">{{ profile.specialty }}</span>
-				<p>{{ profile.address }}, {{ profile.district }}, {{ profile.province }}</p>
-				<p>{{ profile.phone }}</p>
-				
-				{% for tag in profile.tags %}
-					<span class="label label-default">{{ tag }}</span>
-				{% endfor %}
-			</div>
+		{% else %}
+			<div class="well">Aucun praticien trouvé </div>
+		{% endfor %}
+
+		{% if profiles.haveToPaginate %}
+			{{ pagerfanta(
+				profiles,
+				'twitter_bootstrap3_translated'
+			) }}
+		{% endif %}
 		</div>
-	{% endfor %}
-
-	{{ pagerfanta(
-		profiles,
-		'twitter_bootstrap3_translated'
-	) }}
+		<div id="sidebar" class="col-xs-12 col-sm-5 hidden-xs">
+			<div id="map"><i class="glyphicon glyphicon-info-sign"></i> Carte non disponible</div>
+		</div>
 	</div>
-	<div class="col-xs-12 col-sm-5">
-		<div id="map" style="height: 400px; width: 100%;"></div>
-	</div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.0.3/stickyfill.js"></script>
+	<script src="{{ asset('js/list.js') }}"></script>
 	<script>
-		var dataUrl = '{{ path('profiles_list_json', app.request.attributes.get('_route_params'))|escape('js') }}';
+		$('.to_map').click(function() {
+			$('.to_map').addClass('disabled');
+			$('.to_list').removeClass('disabled');
+			$('.profiles-list').addClass('hidden-xs');
+			$('#sidebar').removeClass('hidden-xs');
+		});
+
+		$('.to_list').click(function() {
+			$('.to_list').addClass('disabled');
+			$('.to_map').removeClass('disabled');
+			$('#sidebar').addClass('hidden-xs');
+			$('.profiles-list').removeClass('hidden-xs');
+		});
+	</script>
+
+	<script>
+		//$('#sidebar').Stickyfill();
+		var dataUrl = '{{ path('profiles_list_json', app.request.query.all|merge(app.request.attributes.get('_route_params')))|escape('js') }}';
+		var baseUrl = '{{ app.request.baseUrl|escape('js') }}';
 	</script>
 	<script src="{{ asset('js/map.js') }}"></script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&callback=initMap"></script>
-	<script>
-	jQuery(document).ready(function(){
-		var whatDataUrl = '{{ path('ajax_fetch_what')|escape('js') }}';
-		var whatInput = $('#filter_form_what');
-		whatInput.select2({
-			placeholder: "Quoi?",
-			width: '100%',
-			ajax: {
-				url: whatDataUrl,
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-					return {
-						q: params.term
-					};
-				},
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
-			},
-			minimumInputLength: 2
-		});
-
-		var filterForm = $("form[name='filter_form']");
-
-		var whereDataUrl = '{{ path('ajax_fetch_where')|escape('js') }}';
-		var whereInput = $('#filter_form_where');
-		whereInput.select2({       
-			placeholder: "Où?",
-			width: '100%',
-			ajax: {
-				url: whereDataUrl,
-				dataType: 'json',
-				delay: 250,
-				data: function (params) {
-					return {
-						q: params.term
-					};
-				},
-				processResults: function (data) {
-					return {
-						results: data
-					};
-				},
-				cache: true
-			},
-			minimumInputLength: 2
-		});
-
-		whatInput.on('change', function (e) {
-			if ( whereInput.val() !== null ) {
-				filterForm.submit();
-			}
-		});
-
-		whereInput.on('change', function (e) {
-			if ( whatInput.val() !== null ) {
-				filterForm.submit();
-			}
-
-		});
-
-	});
-	</script>
 {% endblock %}

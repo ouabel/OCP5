@@ -39,7 +39,7 @@ class ProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $query = $queryBuilder
             ->andWhere('p.isPublished = 1')
-            ->orderBy('p.name', 'DESC')
+            ->orderBy('p.lastName', 'DESC')
             ->getQuery();
 
          return $this->createPaginator($query, $page);

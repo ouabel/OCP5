@@ -1,0 +1,13 @@
+{% extends '::layout.html.twig' %}
+
+{% block container %}
+    <h1>Page non trouvée</h1>
+
+    <p>
+        La page que vous avez demandée n'existe plus ...
+    </p>
+	
+	<p>
+		<a class="btn btn-info btn-lg" href="{{ path('home_page') }}">Retourner à la page d'accueil</a>
+	<p>
+{% endblock %}

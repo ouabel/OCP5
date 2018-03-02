@@ -4,13 +4,13 @@ namespace AppBundle\Entity;
 
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use FOS\CommentBundle\Entity\Thread as BaseThread;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Profile
  * @Vich\Uploadable
  */
-class Profile extends BaseThread
+class Profile
 {
     const NUM_ITEMS = 10;
 
@@ -19,15 +19,26 @@ class Profile extends BaseThread
      */
     protected $id;
 
+   /**
+     * @var string
+     */
+    private $title;
+
     /**
      * @var string
      */
-    private $name;
+    private $firstName;
+
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
+    private $lastName;
 
     /**
      * @var bool
      */
-    private $isPublished;
+    private $isPublished = true;
 
     /**
      * @var string|null
@@ -67,16 +78,25 @@ class Profile extends BaseThread
 
     /**
      * @var string|null
+     * @Assert\Regex(
+     *     pattern="/^[0-9]*$/",
+     *     match=true
+     * )
      */
     private $phone;
 
     /**
      * @var string|null
+     * @Assert\Regex(
+     *     pattern="/^[0-9]*$/",
+     *     match=true
+     * )
      */
     private $mobile;
 
     /**
      * @var string|null
+     * @Assert\Email
      */
     private $email;
 
@@ -92,16 +112,19 @@ class Profile extends BaseThread
 
     /**
      * @var \AppBundle\Entity\Specialty
+     * @Assert\NotBlank()
      */
     private $specialty;
 
     /**
      * @var \AppBundle\Entity\Province
+     * @Assert\NotBlank()
      */
     private $province;
 
     /**
      * @var \AppBundle\Entity\District
+     * @Assert\NotBlank()
      */
     private $district;
 
@@ -109,6 +132,12 @@ class Profile extends BaseThread
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tags;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $comments;
+
 
     /**
      * Constructor
@@ -131,27 +160,79 @@ class Profile extends BaseThread
     }
 
     /**
-     * Set name.
+     * Set title.
      *
-     * @param string $name
+     * @param string $title
      *
      * @return Profile
      */
-    public function setName($name)
+    public function setTitle($title)
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get name.
+     * Get title.
      *
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
+        return $this->title;
+    }
+
+    /**
+     * Set firstName.
+     *
+     * @param string $firstName
+     *
+     * @return Profile
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName.
+     *
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+    /**
+     * Set lastName.
+     *
+     * @param string $lastName
+     *
+     * @return Profile
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName.
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function getFullName()
+    {
+        return $this->title . ' ' . $this->lastName . ' ' . $this->firstName;
     }
 
     /**
@@ -562,9 +643,45 @@ class Profile extends BaseThread
     {
         return $this->tags;
     }
-	
-	public function __toString()
-	{
-		return $this->name;
-	}
+
+    /**
+     * Add comment.
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     *
+     * @return Profile
+     */
+    public function addComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment.
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeComment(\AppBundle\Entity\Comment $comment)
+    {
+        return $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
 }

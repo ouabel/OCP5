@@ -1,0 +1,9 @@
+<h3>Envoyer votre commentaire</h3>
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} 
+	<p>connecté en tant que "{{ app.user.username }}"</p>
+{% endif %}
+{{ form_start(newCommentForm, {attr: {novalidate: 'novalidate'}}) }}
+	<label for="appbundle_comment_content">Votre message</label>
+    <p>{{ form_widget(newCommentForm.content) }}</p>
+	<input class="btn btn-primary" type="submit" value="Envoyer" novalidate>
+{{ form_end(newCommentForm) }}

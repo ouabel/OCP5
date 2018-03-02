@@ -1,0 +1,6 @@
+.site-wrapper {
+	padding: 150px 10px;
+}
+.select2-selection__rendered {
+   max-height: 100px;
+}

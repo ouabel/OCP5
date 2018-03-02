@@ -1,43 +1,131 @@
-{% extends 'base.html.twig' %}
-{% block title %}{{ profile.name }}{% endblock %}
-{% block body %}
-<div class="container">
+{% extends 'layout.html.twig' %}
+{% block title %}{{ profile.fullName }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block container %}
+
 	<h1><a href="{{ path('profile_show', {
-					'slug': profile.slug,
-					'district': profile.district.slug,
-					'specialty': profile.specialty.slug,
-					'province': profile.province.slug
-				}) }}">{{ profile.name }}</a></h1>
-	<p><a href="{{ path('profiles_by_district_specialty', {
+							'slug': profile.slug,
+							'district': profile.district.slug,
+							'specialty': profile.specialty.slug,
+							'province': profile.province.slug
+						}) }}">{{ profile.fullName }}</a></h1>
+	<ol class="breadcrumb">
+		<li><a href="{{ path('home_page') }}">Home</a></li>
+		<li><a href="{{ path('profiles_by_province_specialty', {
+					'province_slug': profile.province.slug,
+					'specialty_slug': profile.specialty.slug
+				}) }}">{{ profile.specialty }} à {{ profile.province }}</a></li>
+		<li><a href="{{ path('profiles_by_district_specialty', {
 					'province_slug': profile.province.slug,
 					'district_slug': profile.district.slug,
 					'specialty_slug': profile.specialty.slug
-				}) }}">{{ profile.specialty }}</a><p>
+				}) }}">{{ profile.specialty }} à {{ profile.district }}</a></li>
+		<li class="active">{{ profile.fullName }}</li>
+	</ol>
 
-	<p>
-		{{ profile.address }},
-		<a href="{{ path('profiles_by_district_specialty', {
-					'province_slug': profile.province.slug,
-					'district_slug': profile.district.slug,
-					'specialty_slug': profile.specialty.slug
-				}) }}">{{ profile.district }}</a>,
-		<a href="{{ path('profiles_by_province_specialty', {
-					'province_slug': profile.province.slug,
-					'specialty_slug': profile.specialty.slug
-				}) }}">{{ profile.province }}</a>
-	</p>
+	<div class="row">
+		<div class="col-xs-12 col-sm-7">
+			<div class="panel panel-body">
+				<div class="profile-description">
+					<div class="profile-photo">
+						<a href="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" data-fancybox data-caption="{{ profile.fullName }}">
+							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" alt="" />
+						</a>
+					</div>
+					<div>
+						<p>
+							{{ profile.description|raw }}
+						</p>
+					</div>
+					<hr>
+				</div>
 
-	<p>
-		{% for tag in profile.tags %}
-			<a href="{{ path('profiles_by_district_tag', {
-					'province_slug': profile.province.slug,
-					'district_slug': profile.district.slug,
-					'tag_slug': tag.slug
-				}) }}">{{ tag }}</a>,
-		{% endfor %}
-	</p>
+				<div class="profile-address">
+					<h3>Adresse</h3>
+					{{ profile.address ? profile.address ~ ',' : '' }} {{ profile.district }}, {{ profile.province }}
+				</div>
+				{% if profile.tags %}
+					<div class="profile-tags">
+						<h3>Expertises</h3>
+						{% for tag in profile.tags %}
+							<a class="btn btn-default" href="{{ path('profiles_by_district_tag', {
+									'province_slug': profile.province.slug,
+									'district_slug': profile.district.slug,
+									'tag_slug': tag.slug
+								}) }}">{{ tag }}</a>
+						{% endfor %}
+					</div>
+				{% endif %}
+				<hr>
+				{% if profile.phone %}<span class="phone"><i class="glyphicon glyphicon-phone-alt"></i> {{ profile.phone }}</span>{% endif %}
+				{% if profile.mobile %}<span class="phone"><i class="glyphicon glyphicon-earphone"></i> {{ profile.mobile }}</span>{% endif %}
+				{% if profile.email %}<span class="phone"><i class="glyphicon glyphicon-envelope"></i> {{ profile.email }}</span>{% endif %}
+			</div>
+		</div>
+		<div id="sidebar" class="col-xs-12 col-sm-5">
+			<div id="map"><i class="glyphicon glyphicon-info-sign"></i> Carte non disponible</div>
+		</div>
+	</div>
+<br>
+{% for label, messages in app.flashes %}
+	{% for message in messages %}
+		<div class="alert alert-{{ label }}">
+			{{ message }}
+		</div>
+	{% endfor %}
+{% endfor %}
 
-	{% include '@FOSComment/Thread/async.html.twig' with {'id': profile.id} %}
+<div class="well" id="new-comment">
+{% if is_granted('ROLE_USER') %}
+
+	{{ render(controller( 'AppBundle\\Controller\\CommentController::newCommentFormAction', {}, { 'profile': profile.id } )) }}
+
+{% else %}
+	<p>Se connecter pour commenter</p>
+{% endif %}
+</div>
+
+<div id="comments">
+
+	{{ render(controller( 'AppBundle\\Controller\\CommentController::listComment', { 'id': profile.id }, { 'page': app.request.query.get('page') } )) }}
 
 </div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.0.3/stickyfill.js"></script>
+{% if profile.latitude != 0 and profile.latitude != 0 %}
+	<script>
+		//$('#sidebar').Stickyfill();
+		var baseUrl = '{{ app.request.baseUrl|escape('js') }}';
+
+		var profile_position = {
+			lat: {{ profile.latitude }},
+			lng: {{ profile.longitude }}
+		}
+		function initMap() {
+			var mapDiv = document.getElementById('map');
+			var map = new google.maps.Map(mapDiv, {
+				zoom: 15,
+				center: profile_position
+			});
+			var marker = new google.maps.Marker({
+				position: profile_position,
+				map: map,
+				title: '{{ profile.fullName|escape('js') }}',
+				icon: baseUrl + '/icon/yellow.png'
+			});
+		}
+	</script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&callback=initMap"></script>
+{% endif %}
 {% endblock %}

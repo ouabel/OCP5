@@ -7,22 +7,23 @@ $(document).ready(function(){
 			jQuery.getJSON(districtsDataUrl + '?province=' + province)
 		).done( function(data) {
 			jsDistrict.select2({
+				placeholder: 'Sélectionnez une commune',
 				data: data
 			});
 			jsDistrict.val(currentVal).trigger('change');
 		});
 	}
-	var jsProvince = $('.js-province > div > div > select');
+	var jsProvince = $('#profile_province');
 	province = jsProvince.val();
-	var jsDistrict = $(".js-district > div > div > select");
+	var jsDistrict = $("#profile_district_autocomplete");
 	loadDistricts(jsDistrict, province);
 	jsProvince.on('change', function (e) {
 		var province = this.value;
 		loadDistricts(jsDistrict, province);
 	});
 
-	var latitudeInput = $('.js-latitude > div > div > input');
-	var longitudeInput = $('.js-longitude > div > div > input');
+	var latitudeInput = $('#profile_latitude');
+	var longitudeInput = $('#profile_longitude');
 
 	$('.js-pick-location').locationpicker({
 		location: {

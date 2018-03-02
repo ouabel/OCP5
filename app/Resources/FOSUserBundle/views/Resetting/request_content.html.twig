@@ -1,0 +1,22 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<h1>Réinitialisation de mot de passe</h1>
+<div class="row">
+	<div class="col-xs-12 col-sm-6">
+		<h4>Remarque : </h4>
+		<p>Vous ne pouvez demander un nouveau mot de passe que toutes les 2 heures.</p>
+	</div>
+	<div class="col-xs-12 col-sm-6">
+		<form class="form-inline" action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+			<p>
+				<label for="username">{{ 'resetting.request.username'|trans }}</label>
+			</p>
+			<p>
+				<input class="form-control" type="text" id="username" name="username" required="required" />
+			</p>
+			<p>
+				<input class="btn btn-primary" type="submit" value="{{ 'resetting.request.submit'|trans }}" />
+			</p>
+		</form>
+	</div>
+</div>

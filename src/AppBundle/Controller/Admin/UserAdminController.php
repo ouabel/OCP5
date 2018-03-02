@@ -16,4 +16,10 @@ class UserAdminController extends BaseAdminController
         $this->get('fos_user.user_manager')->updateUser($user, false);
         parent::persistEntity($user);
     }
+
+	public function updateUserEntity($user)
+    {
+        $this->get('fos_user.user_manager')->updateUser($user, false);
+        parent::updateEntity($user);
+    }
 }

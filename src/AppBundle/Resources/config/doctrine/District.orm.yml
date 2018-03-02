@@ -11,13 +11,12 @@ AppBundle\Entity\District:
     fields:
         name:
             type: string
-            length: 255
         slug:
             type: string
-            unique: true
-            length: 255
+            length: 190
             gedmo:
                 slug:
+                    unique: false
                     fields:
                         - name
         zip:
@@ -35,4 +34,5 @@ AppBundle\Entity\District:
         profiles:
             targetEntity: Profile
             mappedBy: district
+            cascade: ["persist", "remove"]
     lifecycleCallbacks: {  }

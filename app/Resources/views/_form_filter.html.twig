@@ -1,12 +1,14 @@
 {% if filterForm is defined %}
-<div class="row">
-{{ form_start(filterForm) }}
-<div class="col-sm-6">
-	{{ form_row(filterForm.what) }}
-</div>
-<div class="col-sm-6">
-	{{ form_row(filterForm.where) }}
-</div>
-{{ form_end(filterForm) }}
+<div class="container-fluid collapse in" id="filter_form_container" class="collapsed">
+	<div class="container">
+		{{ form_start(filterForm, { attr: { id: 'filter_form' } }) }}
+		<div class="col-sm-6 what-row">
+			{{ form_row(filterForm.what) }}
+		</div>
+		<div class="col-sm-6 where-row hidden-xs">
+			{{ form_row(filterForm.where) }}
+		</div>
+		{{ form_end(filterForm) }}
+	</div>
 </div>
 {% endif %}

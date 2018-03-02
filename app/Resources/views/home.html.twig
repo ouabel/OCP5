@@ -1,0 +1,29 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %} dzDoctor {% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset('css/home.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block filterForm %} {% endblock %}
+
+{% block container %}
+	
+	<div class="site-wrapper">
+		<form id="filter_form" method="post" action="{{ path('profiles_filter') }}">
+			<div class="col-xs-6">
+				<select id="filter_form_what" name="filter_form[what]"></select>
+			</div>
+			<div class="col-xs-6">
+				<select id="filter_form_where" name="filter_form[where]"></select>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+{% endblock %}

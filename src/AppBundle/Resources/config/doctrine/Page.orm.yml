@@ -1,0 +1,32 @@
+AppBundle\Entity\Page:
+    type:  entity
+    ChangeTrackingPolicy: DEFERRED_EXPLICIT
+    repositoryClass: AppBundle\Repository\PageRepository
+    table: pages
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: string
+        content:
+            type: text
+        createdAt:
+            type: datetime
+        updatedAt:
+            type: datetime
+        slug:
+            type: string
+            unique: true
+            length: 190
+            gedmo:
+                slug:
+                    unique: true
+                    fields:
+                        - title
+        inMenu:
+            type: boolean
+    lifecycleCallbacks:
+        preUpdate: [setUpdatedAt]

@@ -1,39 +1,70 @@
 easy_admin:
     site_name: Administration
-
+    design:
+        brand_color: '#4F805D'
+        menu:
+            - { label: "Page d'accueil", route: 'home_page', icon: eye }
+            -
+                label: Profiles
+                icon: user-md
+                children:
+                    - Profile
+                    -
+                        entity: Profile
+                        label: 'Nouveau'
+                        params:
+                            action: new
+            - { entity: Specialty, icon: stethoscope }
+            - { entity: Tag, icon: stethoscope }
+            -
+                label: Lieux
+                icon : map-marker
+                children:
+                    - Province
+                    - District
+            - { entity: Comment, icon: comment}
+            - { entity: User, icon: user }
+            - { entity: Page, icon: file }
     entities:
         Profile:
             class: AppBundle\Entity\Profile
             controller: AppBundle\Controller\Admin\ProfileAdminController
-            label: Profiles
+            label: Praticiens
             list:
+                title: 'Liste des praticiens'
+                dql_filter: ''
+                actions:
+                    - { name: 'new', label: 'Nouveau praticien'}
                 fields:
                     - id
-                    - name
+                    - { property: 'title', label: 'Titre' }
+                    - { property: 'lastName', label: 'Nom' }
+                    - { property: 'firstName', label: 'Prénom' }
                     - { property: 'photo', type: 'image', base_path: '%app.path.profile_photos%' }
-                    - isPublished
-                    - specialty
-                    - district
-                    - province
-                    - updatedAt
+                    - { property: 'isPublished', label: 'Publié' }
+                    - { property: 'specialty', label: 'Spécialités' }
+                    - { property: 'province', label: 'Wilaya'}
+                    - { property: 'district', label: 'Commune'}
             form:
                 fields:
-                    - { type: group, css_class: "col-sm-6", label: 'Détails'}
-                    - name
+                    - { type: group, css_class: "col-sm-6", label: 'Détails', icon: 'info-circle'}
+                    - { property: 'title', label: 'Titre' }
+                    - { property: 'firstName', label: 'Prénom' }
+                    - { property: 'lastName', label: 'Nom' }
                     - slug
-                    - isPublished
-                    - { property: 'photoFile', type: 'vich_image' }
-                    - { property: 'specialty', type: 'easyadmin_autocomplete' }
-                    - { property: 'tags', type: 'easyadmin_autocomplete' }
+                    - { property: 'isPublished', label: 'Publié' }
+                    - { property: 'photoFile', label: 'Photo', type: 'vich_image' }
+                    - { property: 'specialty', label: 'Spécialité' }
+                    - { property: 'tags', label: 'Expertises', type: 'easyadmin_autocomplete' }
                     - description
-                    - { type: group, css_class: "col-sm-6", label: 'Contact'}
-                    - phone
+                    - { type: group, css_class: "col-sm-6", label: 'Contact', icon: envelope }
+                    - { property: 'phone', label: 'Téléphone' }
                     - mobile
                     - email
-                    - { type: group, css_class: "col-sm-6", label: 'Adresse'}
-                    - { property: 'province', css_class: 'js-province' }
-                    - { property: 'district', type: 'easyadmin_autocomplete', css_class: 'js-district' }
-                    - address
+                    - { type: group, css_class: "col-sm-6", label: 'Adresse', icon: 'map'}
+                    - { property: 'province', label: 'Wilaya', css_class: 'js-province' }
+                    - { property: 'district', label: 'Commune',  type: 'easyadmin_autocomplete', css_class: 'js-district' }
+                    - { property: 'address', label: 'adresse' }
                     - { property: 'latitude', type: text, css_class: 'js-latitude' }
                     - { property: 'longitude', type: text, css_class: 'js-longitude' }
                     -
@@ -43,8 +74,11 @@ easy_admin:
                         type_options:
                             mapped: false
             new:
+                title: 'Nouveau praticien'
                 fields:
                     - '-slug'
+            edit:
+                title: 'Modifier praticien'
             show:
                 fields:
                     - { property: 'photo', type: 'photo', base_path: '%app.path.profile_photos%' }
@@ -52,61 +86,152 @@ easy_admin:
         Specialty:
             class: AppBundle\Entity\Specialty
             label: Spécialités
+            list:
+                title: 'Liste des spécialités'
+                actions:
+                    - { name: 'new', label: 'Nouvelle spécialité'}
+                fields:
+                    - id
+                    - { property: 'name', label: 'Spécialité'}
+                    - { property: 'profiles', label: 'Praticiens'}
             form:
                 fields:
-                    - name
+                    - { property: 'name', label: 'Spécialité'}
                     - slug
             new:
+                title: 'Nouvelle spécialité'
                 fields:
                     - '-slug'
+            edit:
+                title: 'Modifier spécialité'
         Tag:
             class: AppBundle\Entity\Tag
             label: Expertises
+            list:
+                fields:
+                    - id
+                    - { property: 'name', label: 'Expertise'}
+                    - { property: 'profiles', label: 'Praticiens'}
+                title: 'Liste des expertises'
+                actions:
+                    - { name: 'new', label: 'Nouvelle expertise'}
             form:
                 fields:
-                    - name
+                    - { property: 'name', label: 'Expertise'}
                     - slug
             new:
+                title: 'Nouvelle expertise'
                 fields:
                     - '-slug'
+            edit:
+                title: 'Modifier expertise'
         Province:
             class: AppBundle\Entity\Province
             label: Wilayas
+            list:
+                fields:
+                    - id
+                    - { property: 'name', label: 'Wilaya'}
+                    - { property: 'zip', label: 'Code postal'}
+                    - { property: 'profiles', label: 'Praticiens'}
+                    - { property: 'districts', label: 'Communes'}
+                title: 'Liste des wilayas'
+                actions:
+                    - { name: 'new', label: 'Ajouter une wilaya'}
             form:
                 fields:
-                    - name
+                    - { property: 'name', label: 'Wilaya'}
                     - slug
-                    - zip
+                    - { property: 'zip', label: 'Code postal'}
             new:
+                title: 'Nouvelle wilaya'
                 fields:
                     - '-slug'
+            edit:
+                title: 'Modifier wilaya'
         District:
             class: AppBundle\Entity\District
+            controller: AppBundle\Controller\Admin\DistrictAdminController
             label: Communes
+            list:
+                fields:
+                    - id
+                    - { property: 'name', label: 'Commune'}
+                    - { property: 'zip', label: 'Code postal'}
+                    - { property: 'province', label: 'Wilaya'}
+                    - { property: 'profiles', label: 'Praticiens'}
+                title: 'Liste des communes'
+                dql_filter: ''
+                actions:
+                    - { name: 'new', label: 'Ajouter une commune'}
             form:
                 fields:
-                    - name
+                    - { property: 'name', label: 'Commune'}
                     - slug
-                    - province
-                    - zip
+                    - { property: 'province', label: 'Wilaya'}
+                    - { property: 'zip', label: 'Code postal'}
             new:
+                title: 'Nouvelle commune'
                 fields:
                     - '-slug'
-            new:
+            edit:
+                title: 'Modifier commune'
+        Comment:
+            class: AppBundle\Entity\Comment
+            label: Commentaires
+            disabled_actions: ['new']
+            list:
+                title: 'Commentaires'
                 fields:
-                    - '-slug'
+                    - id
+                    - { property: 'author', label: 'Auteur'}
+                    - { property: 'profile', label: 'Praticien'}
+                    - { property: 'createdAt', label: 'Publié le'}
+                    - { property: 'isPublished', label: 'Publié'}
+            form:
+                fields:
+                    - { property: 'content', label: 'Commentaire'}
+                    - { property: 'isPublished', label: 'Publié'}
         User:
             class: AppBundle\Entity\User
             controller: AppBundle\Controller\Admin\UserAdminController
             label: Utilisateurs
+            disabled_actions: ['new']
+            list:
+                title: 'Utilisateurs'
+                fields:
+                    - { property: 'username', label: "Nom d'utilisateur"}
+                    - email
+                    - { property: 'lastLogin', label: "Dernière connexion"}
             form:
                 fields:
-                    - username
+                    - { property: 'username', label: "Nom d'utilisateur"}
                     - email
-                    - enabled
-                    - lastLogin
-                    - { property: 'plainPassword', type: 'text', type_options: { required: false } }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
-        Comment:
-            class: AppBundle\Entity\Comment
-            label: Commentaires
+                    - { property: 'Activé', label: "Dernière connexion"}
+                    - { property: 'lastLogin', label: "Dernière connexion"}
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Utilisateur': 'ROLE_USER', 'Administrateur': 'ROLE_ADMIN' } } }
+        Page:
+            class: AppBundle\Entity\Page
+            label: Pages
+            list:
+                title: 'Pages'
+                actions:
+                    - { name: 'new', label: 'Nouvelle page'}
+                fields:
+                    - { property: 'title', label: 'Titre'}
+                    - { property: 'inMenu', label: 'Dans Menu'}
+                    - { property: 'createdAt', label: 'Publié le'}
+                    - { property: 'updatedAt', label: 'Mis à jour'}
+            form:
+                fields:
+                    - { property: 'title', label: 'Titre'}
+                    - slug
+                    - { property: 'inMenu', label: 'Dans Menu'}
+                    - { property: 'content', label: 'contenu'}
+            new:
+                title: 'Nouvelle page'
+                fields:
+                    - '-slug'
+                    - { property: 'content', label: 'contenu', type_options: { required: false } }
+            edit:
+                title: 'Modifier page'

@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Province
@@ -24,6 +25,10 @@ class Province
 
     /**
      * @var int
+     * @Assert\Regex(
+     *     pattern="/^[0-9]*$/",
+     *     match=true
+     * )
      */
     private $zip;
 
@@ -125,7 +130,11 @@ class Province
      */
     public function getZip()
     {
-        return $this->zip;
+        if (strlen($this->zip) < 5) {
+            return "0$this->zip";
+        } else {
+            return "$this->zip";
+        }
     }
 
     /**

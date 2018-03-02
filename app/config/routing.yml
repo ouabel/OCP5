@@ -1,23 +1,37 @@
-
-fos_user:
-    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
-
-fos_comment_api:
-    type: rest
-    resource: "@FOSCommentBundle/Resources/config/routing.yml"
-    prefix: /api
-    defaults: { _format: html }
-
-app_filter:
-    resource: '@AppBundle/Controller/FilterController.php'
-    type: annotation
-
-app:
-    resource: '@AppBundle/Controller/'
-    type: annotation
-
 easy_admin_bundle:
     resource: "@EasyAdminBundle/Controller/AdminController.php"
     type:     annotation
     prefix:   /admin
 
+app_admin:
+    resource: '@AppBundle/Controller/Admin'
+    type: annotation
+    prefix:   /admin
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+app_page:
+    resource: '@AppBundle/Controller/PageController.php'
+    type: annotation
+    prefix: /page
+
+app_filter:
+    resource: '@AppBundle/Controller/FilterController.php'
+    type: annotation
+
+app_district:
+    resource: '@AppBundle/Controller/DistrictController.php'
+    type: annotation
+
+app_comment:
+    resource: '@AppBundle/Controller/CommentController.php'
+    type: annotation
+
+app_profile:
+    resource: '@AppBundle/Controller/ProfileController.php'
+    type: annotation
+
+app_redirecting:
+    resource: '@AppBundle/Controller/RedirectingController.php'
+    type: annotation

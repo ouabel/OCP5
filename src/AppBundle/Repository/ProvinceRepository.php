@@ -18,10 +18,17 @@ class ProvinceRepository extends \Doctrine\ORM\EntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('p');
 
+        if ( is_numeric($query) ) {
+               $queryBuilder
+                ->orWhere('p.zip LIKE :q')
+                ->setParameter('q', '%' . $query . '%')
+            ;
+        } else {
             $queryBuilder
                 ->orWhere('p.name LIKE :q')
-                ->setParameter('q', '%'.$query.'%')
+                ->setParameter('q', '%' . $query . '%')
             ;
+        }
 
         return $queryBuilder
             ->orderBy('p.name', 'DESC')

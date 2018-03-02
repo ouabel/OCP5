@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+	<link href="{{ asset('css/layout.css') }}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+
+    {% block navbar %}
+        <nav class="navbar navbar-inverse">
+          <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ path('home_page') }}">{{ project_name }}</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+
+			  {{ knp_menu_render('AppBundle:Builder:mainMenu', {'template': 'knp_menu.html.twig',
+			  'rootClass': 'foo' }) }}
+			  
+			  <div class="navbar-right">
+				<ul class="nav navbar-nav">
+					{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+					  <li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.username }} <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+						  <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
+						  <li><a href="{{ path('fos_user_profile_edit') }}">Mon profile</a></li>
+						</ul>
+					  </li>
+					{% else %}
+						<li><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
+					{% endif %}
+				</ul>
+			  </div>
+            </div><!--/.navbar-collapse -->
+          </div>
+        </nav>
+    {% endblock %}
+
+{% block filterForm %}
+    {{ render(controller( 'AppBundle\\Controller\\FilterController::filterFormAction' )) }}
+{% endblock %}
+
+<div class="container">
+    {% block container %}
+
+    {% endblock %}
+</div>
+
+<footer>
+    {% block footer %}
+        <p class="text-center" >&copy; 2018 dzDoctor</p>
+    {% endblock %}
+</footer>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.js"></script>
+<script src="{{ asset('js/select2/fr.js') }}"></script>
+<script>
+    var whatDataUrl = '{{ path('ajax_fetch_what')|escape('js') }}';
+    var whereDataUrl = '{{ path('ajax_fetch_where')|escape('js') }}';
+</script>
+<script src="{{ asset('js/filter.js') }}"></script>
+{% endblock %}
