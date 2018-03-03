@@ -7,6 +7,8 @@ $(document).ready(function(){
 			jQuery.getJSON(districtsDataUrl + '?province=' + province)
 		).done( function(data) {
 			jsDistrict.select2({
+				theme: 'bootstrap',
+				language: 'fr',
 				placeholder: 'Sélectionnez une commune',
 				data: data
 			});

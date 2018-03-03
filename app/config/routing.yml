@@ -16,12 +16,12 @@ app_page:
     type: annotation
     prefix: /page
 
-app_filter:
-    resource: '@AppBundle/Controller/FilterController.php'
-    type: annotation
-
 app_district:
     resource: '@AppBundle/Controller/DistrictController.php'
+    type: annotation
+
+app_filter:
+    resource: '@AppBundle/Controller/FilterController.php'
     type: annotation
 
 app_comment:

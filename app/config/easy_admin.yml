@@ -5,7 +5,7 @@ easy_admin:
         menu:
             - { label: "Page d'accueil", route: 'home_page', icon: eye }
             -
-                label: Profiles
+                label: Praticiens
                 icon: user-md
                 children:
                     - Profile

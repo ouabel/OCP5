@@ -9,6 +9,8 @@ imports:
 parameters:
     locale: fr
     app.path.profile_photos: 'uploads/images/profiles'
+    project_name: dzDoctor
+    contact_email: ouabel@live.com
 
 framework:
     #esi: ~

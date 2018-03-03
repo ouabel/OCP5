@@ -35,7 +35,7 @@ function initMap() {
                         }, 500);
                     } else {
 
-                        var content =  '<strong>' + profile.name + '</strong><br>' + profile.specialty + ' à ' + profile.district +'<br><a href="' + profile.link + '">Détails ...</a>' ;
+                        var content =  '<strong>' + profile.name + '</strong><br>' + profile.specialty + ' à ' + profile.district +'<br><a href="' + baseUrl + profile.link + '">Détails ...</a>' ;
 
                         infowindow.setContent(content);
                         infowindow.open(map, marker);

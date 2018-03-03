@@ -15,6 +15,8 @@
 		<script>
 			var select_province = $("#filter_districts_form_province");
 			select_province.select2({
+				theme: 'bootstrap',
+				language: 'fr',
 				placeholder: 'Afficher par wilaya'
 			});
 			select_province.on('change', function() {
@@ -32,12 +34,18 @@
 			var jsDistrict = $('#filter_profiles_form_district');
 			
 			jsSpecialty.select2({
+				theme: 'bootstrap',
+				language: 'fr',
 				placeholder: 'Sélectionnez une spécialité'
 			});
 			jsProvince.select2({
+				theme: 'bootstrap',
+				language: 'fr',
 				placeholder: 'Sélectionnez une wilaya'
 			});
 			jsDistrict.select2({
+				theme: 'bootstrap',
+				language: 'fr',
 				placeholder: 'Aucune wilaya sélectionnée'
 			});
 			jsProvince.on('change', function (e) {

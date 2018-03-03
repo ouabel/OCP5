@@ -16,6 +16,15 @@ use AppBundle\Entity\Tag;
 
 class ProfileController extends Controller
 {
+
+    /**
+     * @Route("/", name="home_page")
+     *
+     */
+    public function homeAction(){
+        return $this->render('page_home.html.twig');
+    }
+
     /**
      *
      * @Route("/profile/{id}", name="profile_by_id")
@@ -30,7 +39,7 @@ class ProfileController extends Controller
                     'slug' => $profile->getSlug()
                 ]);
         } else {
-            return new Response('404');
+            throw $this->createNotFoundException();
         }
     }
 
@@ -38,7 +47,7 @@ class ProfileController extends Controller
      *
      * @Route("/{province}/{district}/{specialty}/{slug}", name="profile_show")
      */
-    public function showAction(Request $request, String $slug)
+    public function showAction(Request $request, string $slug)
     {
         $em = $this->getDoctrine()->getManager();
         $profileRepository = $em->getRepository(Profile::class);
@@ -67,12 +76,12 @@ class ProfileController extends Controller
             }
 
         } else {
-            return new Response('404');
+            throw $this->createNotFoundException();
         }
     }
 
     /**
-     * @Route("/json", name="profiles_list_json")
+     * @Route("/json/profiles", name="profiles_list_json")
      */
     public function jsonProfilesAction(Request $request)
     {
@@ -89,7 +98,7 @@ class ProfileController extends Controller
         $properties = $this->filteringProperties($slugs);
 
         if(empty($properties)){
-            return new Response('404');
+            throw $this->createNotFoundException();
         } else {
             $profiles = $profileRepository->getProfiles($properties, $page);
             $data = [];
@@ -115,14 +124,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @Route("/", name="home_page")
-     *
-     */
-    public function homeAction(){
-        return $this->render('home.html.twig');
-    }
-
-    /**
      * @Route("/{province_slug}/tag-{tag_slug}", name="profiles_by_province_tag")
      * @Route("/{province_slug}/{district_slug}/tag-{tag_slug}", name="profiles_by_district_tag")
      * @Route("/{province_slug}/{specialty_slug}", name="profiles_by_province_specialty")
@@ -145,7 +146,6 @@ class ProfileController extends Controller
 
         if(empty($properties)){
             throw $this->createNotFoundException();
-            return new Response('404');
         } else {
             $what = ($properties['specialty'] ?: $properties['tag']);
             $where = ($properties['district'] ?: $properties['province']);

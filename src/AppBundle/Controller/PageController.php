@@ -23,14 +23,15 @@ class PageController extends Controller
 
         if($contactForm->isSubmitted() &&  $contactForm->isValid()){
             $message = (new \Swift_Message())
-                ->setFrom($contactForm['email']->getData())
-                ->setTo('ouabel@live.com')
+                ->setFrom([$contactForm['email']->getData() => $contactForm['name']->getData()])
+                ->setTo($this->getParameter('contact_email'))
+                ->setSubject($contactForm['subject']->getData())
                 ->setBody($contactForm['message']->getData());
 
-                //$this->get('mailer')->send($message);
+                $this->get('mailer')->send($message);
                 $this->addFlash(
                     'success',
-                    'Messaage enovoyé'
+                    'Message enovoyé'
                 );
         }
 

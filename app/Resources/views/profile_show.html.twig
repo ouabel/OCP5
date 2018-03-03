@@ -1,5 +1,6 @@
 {% extends 'layout.html.twig' %}
 {% block title %}{{ profile.fullName }}{% endblock %}
+{% block description %}{{ profile.fullName }} - {{ profile.specialty }} à {{ profile.district }} - {{ profile.province }}{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -15,7 +16,7 @@
 							'province': profile.province.slug
 						}) }}">{{ profile.fullName }}</a></h1>
 	<ol class="breadcrumb">
-		<li><a href="{{ path('home_page') }}">Home</a></li>
+		<li><a href="{{ path('home_page') }}">Accueil</a></li>
 		<li><a href="{{ path('profiles_by_province_specialty', {
 					'province_slug': profile.province.slug,
 					'specialty_slug': profile.specialty.slug
@@ -31,13 +32,13 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-7">
 			<div class="panel panel-body">
-				<div class="profile-description">
+				<div class="profile-about">
 					<div class="profile-photo">
 						<a href="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" data-fancybox data-caption="{{ profile.fullName }}">
-							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" alt="" />
+							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" alt="{{ profile.fullName }}" />
 						</a>
 					</div>
-					<div>
+					<div class="profile-description">
 						<p>
 							{{ profile.description|raw }}
 						</p>
@@ -49,7 +50,7 @@
 					<h3>Adresse</h3>
 					{{ profile.address ? profile.address ~ ',' : '' }} {{ profile.district }}, {{ profile.province }}
 				</div>
-				{% if profile.tags %}
+				{% if profile.tags|length > 0 %}
 					<div class="profile-tags">
 						<h3>Expertises</h3>
 						{% for tag in profile.tags %}
@@ -86,7 +87,7 @@
 	{{ render(controller( 'AppBundle\\Controller\\CommentController::newCommentFormAction', {}, { 'profile': profile.id } )) }}
 
 {% else %}
-	<p>Se connecter pour commenter</p>
+	<p><a href="{{ path('fos_user_security_login') }}">Se connecter</a> pour commenter</p>
 {% endif %}
 </div>
 

@@ -1,3 +1,7 @@
+body {
+	background: #eaf1f7;
+}
+
 @media (max-width: 992px) {
    .container {
       width: 100%;
@@ -17,6 +21,7 @@
 }
 
 #sidebar {
+	position: static;
 	position: -webkit-sticky;
     position: sticky;
     top: 70px;
@@ -46,10 +51,9 @@
 	width: 100%;
 	font-size: 25px;
 	color: #8e8e8e;
-	padding: ;
 }
 
-.profile-description {
+.profile-about {
 	display: flex;
 }
 
@@ -89,7 +93,10 @@
     max-height:200px;
     width: auto;
     height: auto;
-	padding-right: 15px;
+}
+
+.profile-description {
+	padding-left: 15px;
 }
 
 .profile-tags h3, .profile-address h3 {
@@ -106,4 +113,9 @@
     vertical-align: middle;
     border: 1px solid #ccc;
     border-radius: 4px
+}
+
+.app-footer{
+	text-align: center;
+	line-height: 60px;
 }

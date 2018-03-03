@@ -73,7 +73,6 @@ class CommentController extends Controller
 
     public function listComment(Profile $profile, Request $request) {
         $page = $request->query->get("page", '1');
-        dump($request->query);
         $em = $this->getDoctrine()->getManager();
         $commentRepository = $em->getRepository(Comment::class);
         $comments = $commentRepository->getComments($profile, $page);

@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 {% block title %} {{ what }} à {{ where }} {% endblock %}
-
+{% block description %}Trouver un {{ what }} à {{ where }} facilement {% endblock %}
 {% block container %}
 
 	<h1>{{ what }} à {{ where }}</h1>
@@ -17,7 +17,7 @@
 				<div class="panel-body">
 					<div class="profile-info">
 						<div class="profile-avatar">
-							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}">
+							<img src="{{ app.request.baseURL() }}/{{ profile_photos }}/{{ profile.photo ? profile.photo : 'default.png' }}" alt="{{ profile.fullName }}">
 						</div>
 						<div class="profile-name-container">
 							<h2 class="profile-name" ><a href="{{ path('profile_show', {
@@ -33,6 +33,7 @@
 					<div>
 						{% if profile.phone %}<span class="phone"><i class="glyphicon glyphicon-phone-alt"></i> {{ profile.phone }}</span>{% endif %}
 						{% if profile.mobile %}<span class="phone"><i class="glyphicon glyphicon-earphone"></i> {{ profile.mobile }}</span>{% endif %}
+						{% if profile.email %}<span class="phone"><i class="glyphicon glyphicon-envelope"></i> {{ profile.email }}</span>{% endif %}
 					</div>
 				</div>
 			</div>
@@ -74,7 +75,8 @@
 	</script>
 
 	<script>
-		//$('#sidebar').Stickyfill();
+		Stickyfill.add($('#filter_form_container'));
+		Stickyfill.add($('#sidebar'));
 		var dataUrl = '{{ path('profiles_list_json', app.request.query.all|merge(app.request.attributes.get('_route_params')))|escape('js') }}';
 		var baseUrl = '{{ app.request.baseUrl|escape('js') }}';
 	</script>

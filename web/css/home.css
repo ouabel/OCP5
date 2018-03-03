@@ -1,6 +1,14 @@
-.site-wrapper {
-	padding: 150px 10px;
+#container {
+	width: 100%;
+	background: url('../images/bg.jpg') no-repeat;
+	background-size: 100% auto;	
 }
-.select2-selection__rendered {
-   max-height: 100px;
+
+.site-wrapper {
+	padding: 4% 10% 16%;
+
+}
+
+h1 {
+	font-size: 25px;
 }
